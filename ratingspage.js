@@ -62,31 +62,81 @@ var loadNewCity = function(cityIndex) {
 	var rating4 = $(".rating-4");
 	var rating5 = $(".rating-5");
 	rating1.click(function() {
-		cities[cityIndex].rating = 1;
+		$.ajax({
+	  		url: "https://floating-citadel-2192.herokuapp.com/rating",
+	  		data: 	JSON.stringify({
+  					rating: {
+	  					location_id: cities[cityIndex].id,
+	  					vote: 1
+	  				}
+	  		}),
+	  		type: "POST",
+	  		contentType: "application/json"
+		});
 		if(cityIndex < cities.length) {
 			loadNewCity(cityIndex + 1);
 		}
 	});
 	rating2.click(function() {
-		cities[cityIndex].rating = 2;
+		$.ajax({
+	  		url: "https://floating-citadel-2192.herokuapp.com/rating",
+	  		data: 	JSON.stringify({
+  					rating: {
+	  					location_id: cities[cityIndex].id,
+	  					vote: 2
+	  				}
+	  		}),
+	  		type: "POST",
+	  		contentType: "application/json"
+		});
 		if(cityIndex < cities.length) {
 			loadNewCity(cityIndex + 1);
 		}
 	});
 	rating3.click(function() {
-		cities[cityIndex].rating = 3;
+		$.ajax({
+	  		url: "https://floating-citadel-2192.herokuapp.com/rating",
+	  		data: 	JSON.stringify({
+  					rating: {
+	  					location_id: cities[cityIndex].id,
+	  					vote: 3
+	  				}
+	  		}),
+	  		type: "POST",
+	  		contentType: "application/json"
+		});
 		if(cityIndex < cities.length) {
 			loadNewCity(cityIndex + 1);
 		}
 	});
 	rating4.click(function() {
-		cities[cityIndex].rating = 4;
+		$.ajax({
+	  		url: "https://floating-citadel-2192.herokuapp.com/rating",
+	  		data: 	JSON.stringify({
+  					rating: {
+	  					location_id: cities[cityIndex].id,
+	  					vote: 4
+	  				}
+	  		}),
+	  		type: "POST",
+	  		contentType: "application/json"
+		});
 		if(cityIndex < cities.length) {
 			loadNewCity(cityIndex + 1);
 		}
 	});
 	rating5.click(function() {
-		cities[cityIndex].rating = 5;
+		$.ajax({
+	  		url: "https://floating-citadel-2192.herokuapp.com/rating",
+	  		data: 	JSON.stringify({
+  					rating: {
+	  					location_id: cities[cityIndex].id,
+	  					vote: 5
+	  				}
+	  		}),
+	  		type: "POST",
+	  		contentType: "application/json"
+		});
 		if(cityIndex < cities.length) {
 			loadNewCity(cityIndex + 1);
 		}
@@ -94,52 +144,50 @@ var loadNewCity = function(cityIndex) {
 }
 
 var getImages = function() {
-	_.each(cities, function(city) {
+	_.each(cities, function(city,index) {
 		if(city.name) {
 			var promise = getflickrimage(city.name);
 			promise.then(function(images) {
 				city.imageUrl1 = images[0];
 				city.imageUrl2 = images[1];
-				city.imageUrl3 = images[2];				
+				city.imageUrl3 = images[2];		
+				if(index == 0) {
+					start();
+				}		
 			});
 		}
 	});
 }
 
+var getCityNames = function(cities) {
+	  	return Promise.all(_.map(cities, function(location, index) {
+	  		return new Promise(function(resolve, reject) {
+			    $.get("http://api.sandbox.amadeus.com/v1.2/location/" + location.name + "/?apikey=QW3ItzI2KsWJQ8YHg2ysbapNVMc2bteI", function(data) {
+			     	cities[index].name = data.city.name 
+			     	resolve(cities[index]);
+			 	});
+	  		});
+	  	}));
+}
+
 var getCities = function() {
+    var resolve;
+    var reject;
+    var p = new Promise(function(res, rej){
+        resolve = res;
+        reject = rej;
+    });
+
 	$.ajax({
-	  url: "https://blooming-lake-7935.herokuapp.com/trip/2"
+	  url: "https://floating-citadel-2192.herokuapp.com/trip/" + window.location.hash.substring(1).split("=")[1]
 	})
 	  .done(function( data ) {
-	    debugger;
+	  	 getCityNames(data.trip.locations).then(function(cities)  {
+	  	 	resolve(cities);
+	  	 });
 	});
 
-
-	var cities = [{
-		name: "Boston"
-	},{
-		name: "Miami",
-	},{
-		name: "Athens",
-	},{
-		name: "LA",
-	},{
-		name: "San Antonio",
-	},{
-		name: "New York",
-	},{
-		name: "Orlando",
-	},{
-		name: "New Orleans",
-	},{
-		name: "Grand Canyon",
-	},{
-		name: "San Francisco",
-	},{
-		name: "Seattle",
-	}];
-
-	return cities;
+	return p;
 }
 
 var start = function() {
@@ -147,8 +195,9 @@ var start = function() {
 	loadNewCity(0);
 }
 
-var cities = getCities();
-getImages();
-setTimeout(function() {
-	start();
-}, 1000);
+var citiesPromise = getCities();
+var cities;
+citiesPromise.then(function(citiesArray) {
+	cities = citiesArray;
+	getImages();
+});
