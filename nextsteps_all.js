@@ -16,12 +16,32 @@ var getInfo = function() {
 	return p;
 }
 
+var getCityNames = function(cities) {
+	  	return Promise.all(_.map(cities, function(location, index) {
+	  		return new Promise(function(resolve, reject) {
+			    $.get("http://api.sandbox.amadeus.com/v1.2/location/" + location.name + "/?apikey=QW3ItzI2KsWJQ8YHg2ysbapNVMc2bteI", function(data) {
+			     	if(data.city) {
+			     		cities[index].name = data.city.name 
+			     	}
+			     	resolve(cities[index]);
+			 	});
+	  		});
+	  	}));
+}
+
 var tripID = window.location.hash.substring(1).split("=")[1];
 
 var infoPromise = getInfo();
 infoPromise.then(function(info) {
-	info.trip.locations =  _.sortBy(info.trip.locations, function(location){ return 0 - location.votes_count; })
-	_.each(info.trip.locations, function(location) {
-		$(".cities").append($("<h4 class='city-result'> </h4>").text("Airport: " + location.name + "  Votes: " + location.votes_count));
+	var cityNamePromise = getCityNames(info.trip.locations);
+	cityNamePromise.then(function(locations) {
+		locations =  _.sortBy(locations, function(location){ return 0 - location.votes_count; })
+		_.each(locations, function(location, index) {
+
+			$(".cities").append($("<h4 class='city-result'> </h4>").html("<b>Airport: </b>" + location.name + " <b> Votes: </b>" + location.votes_count));
+			if(index == 0) {
+				$(".city-result").addClass("top-choice");
+			} 
+		});
 	});
 });
