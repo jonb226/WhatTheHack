@@ -28,17 +28,31 @@
       <style>
       body {
           padding: 1em;
+          background-image: url('empire.jpg');
+          background-position: 24% 0%;
+          background-color: rgba(0,0,0,.5);
+          
           
         }
         .starter-template {
           padding: 40px 15px;
           text-align: center;
         }
-
+          
+        #fader{
+            position: absolute;
+            opacity: .7;
+            width:100%;
+            height:100%;
+            top: 0;
+            left:0;
+            background-color:white;
+        }
       
       </style>
   </head>
     <body>
+        <div id='fader'></div>
     <form action='http://localhost:3000/trip' method='post' class="form-horizontal" id='myform'>
     <div class="form-group">
         <label for="inputEmail" class="control-label col-xs-2">Departure airport</label>
@@ -127,10 +141,13 @@
             console.log(JSON.stringify(formData));
             $.ajax({
               type: "POST",
-              url: "https://floating-citadel-2192.herokuapp.com/trip",
-              //url: "http://localhost:3000/trip",
+              //url: "https://floating-citadel-2192.herokuapp.com/trip",
+              url: "http://localhost:3000/trip",
               data: JSON.stringify(formData),
               success: function(res){
+                if(typeof res === 'string'){
+                    res = JSON.parse(res);
+                }
                 window.location = '/ratingspage.html#id=' + res.trip.id;
               },
               //dataType: "json",
