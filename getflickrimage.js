@@ -1,4 +1,4 @@
-function getflickrimage(cityName){
+module.exports = function (cityName){
     
     var resolve;
     var reject;
