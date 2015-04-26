@@ -58,68 +58,128 @@
 				</section>
 
 				<section>
-					<h2>Pain Point</h2>
+					<h2>Problem</h2>
 					<p>
-						My friends can't agree on a rad spring break destination.
+						My friends and I are trying to choose a rad spring break destination.
 					</p>
 					<q>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.kayak.com/flights/BOS-YTO/2015-04-27" style="color: #ff2c2d;">&ldquo;Toronto?&rdquo;</a> &ndash;Gal</q><br>
 					<q>&nbsp;&nbsp;<a href="http://www.kayak.com/flights/BOS-ACK/2015-04-27" style="color: #17ff2e;">&ldquo;Nantucket?&rdquo;</a> &ndash;Alex</q><br>
 					<q><a href="http://www.kayak.com/flights/BOS-SXM/2015-04-27" style="color: #1b91ff;">&ldquo;Sint Maarten?&rdquo;</a> &ndash;Corey</q>
-				</section>
-
-				<section>
-					<h2>Solution</h2>
 					<p>
-						[Description]
+						We have an inkling of some places that interest us,<br>
+						but we don't know what's reachable in our budget range.
 					</p>
 				</section>
 
 				<section>
-					<section>
-						<h2><a href="http://bit.ly/1E8sP14">Prototype</a></h2>
-						<p>
-							[Insert the pages from our app]
-						</p>
-					</section>
-					<section>
-						<h2>Prototype Backup Images</h2>
-						<p>
-							[Backup images]
-						</p>
-					</section>
+					<span style="display: inline-block; position: fixed; left: -50px; top: 250px;"><h2>Prototype</h2>
+					<h4>Visit <a href="http://perfecttrip.tk">PerfectTrip.tk</a></h4></span>
+					<span style="display: inline-block;"><iframe src="http://perfecttrip.herokuapp.com/Perfect_trip.html" width="375" height="667" seamless allow-forms allow-scripts allow-popups allow-same-origin scrolling="no"></iframe></span>
 				</section>
 
 				<section>
 					<section>
 						<h2>Under the Hood</h2>
 						<ul>
-							<li><a href="#/4/1">Amadeus API</a></li>
+							<li><a href="#/3/1">Amadeus API</a></li>
 							<li>Bootstrap</li>
 							<li>CSS 3</li>
+							<li><a href="#/3/2">Flickr API</a></li>
 							<li>jQuery</li>
+							<li>Node.js</li>
 							<li>Ruby on Rails</li>
+							<li>Underscore.js</li>
 						</ul>
 					</section>
 					<section>
 						<h2>Amadeus API Usage</h2>
 						<pre><code data-trim contenteditable>
-blah blah code {}
+var getCityNames = function(cities) {
+	  	return Promise.all(_.map(cities, function(location, index) {
+	  		return new Promise(function(resolve, reject) {
+			    $.get("http://api.sandbox.amadeus.com/v1.2/location/" + location.name + "/?apikey=[INSERT AMADEUS API KEY]", function(data) {
+			     	if(data.city) {
+			     		cities[index].name = data.city.name 
+			     	}
+			     	resolve(cities[index]);
+			 	});
+	  		});
+	  	}));
+}
+					</code></pre>
+					</section>
+					<section>
+						<h2>Flicker API Usage</h2>
+						<pre><code data-trim contenteditable>
+function getflickrimage(cityName){
+    
+    var resolve;
+    var reject;
+    var p = new Promise(function(res, rej){
+        resolve = res;
+        reject = rej;
+    });
+    
+    var placeSrcString = 'https://api.flickr.com/services/rest/?api_key=[INSERT FLICKER API KEY]&method=flickr.places.find&query=' + cityName;
+    
+    fetch(placeSrcString).then(function(res){
+        var p = new Promise(function(resolve, reject){
+            if(res.status !== 200){
+                return false;
+            }
+            res.text().then(function(txt){
+                parser=new DOMParser();
+                xmlDoc=parser.parseFromString(txt,"text/xml");
+                var place = xmlDoc.getElementsByTagName('place')[0];
+                resolve(place.getAttribute('place_id'));
+            })
+        });
+        return p;    
+    }).then(function(place_id){
+        var srcString = 'https://api.flickr.com/services/rest/?api_key=[INSERT FLICKER API KEY]&method=flickr.photos.search&place_id=' + place_id + '&tags=city';
+        return fetch(srcString);
+    }).then(function(res){
+        if(res.status !== 200){
+            return false;
+        }
+        res.text().then(function(txt){
+            parser=new DOMParser();
+            xmlDoc=parser.parseFromString(txt,"text/xml");
+            var photos = Array.prototype.slice.call(
+                xmlDoc.getElementsByTagName('photo'),0,3);
+            var urls = photos.map(function(e){
+                var farm = e.getAttribute('farm');
+                var id = e.getAttribute('id');
+                var secret = e.getAttribute('secret');
+                var server = e.getAttribute('server');
+                return 'https://farm' + farm + '.staticflickr.com/' + 
+                    server + '/' + id + '_' + secret + '.jpg';
+            });
+            resolve(urls);
+        });
+    });
+    
+    return p;
+}
 					</code></pre>
 					</section>
 				</section>
 
 				<section>
 					<h2>Moving Forward</h2>
-					<p>
-						Print money.
-					</p>
+					<ul>
+						<li>Allow users to start from different locations</li>
+						<li>Personalize the results</li>
+						<li>Give more information about each destination</li>
+						<li>Let users vote on qualities they want in a trip rather than where</li>
+					</ul>
 				</section>
 
 				<section>
 					<h2>What We Learned</h2>
 					<ul>
 						<li>Minimum viable product selection</li>
-						<li>Testing for constructive feedback</li>
+						<li>How to properly ask for constructive feedback</li>
 						<li>Travel Lingo!</li>
 					</ul><br><br>
 					<h4>We're on GitHub</h4>
