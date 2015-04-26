@@ -35,10 +35,10 @@ var infoPromise = getInfo();
 infoPromise.then(function(info) {
 	var cityNamePromise = getCityNames(info.trip.locations);
 	cityNamePromise.then(function(locations) {
-		locations =  _.sortBy(locations, function(location){ return 0 - location.votes_count; })
+		locations =  _.sortBy(locations, function(location){ return 0 - location.total; })
 		_.each(locations, function(location, index) {
 
-			$(".cities").append($("<h4 class='city-result'> </h4>").html("<b>Airport: </b>" + location.name + " <b> Votes: </b>" + location.votes_count));
+			$(".cities").append($("<h4 class='city-result'> </h4>").html("<b>Airport: </b>" + location.name + " <b> Score: </b>" + location.total));
 			if(index == 0) {
 				$(".city-result").addClass("top-choice");
 			} 
