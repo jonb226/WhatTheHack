@@ -141,8 +141,8 @@
             console.log(JSON.stringify(formData));
             $.ajax({
               type: "POST",
-              //url: "https://floating-citadel-2192.herokuapp.com/trip",
-              url: "http://localhost:3000/trip",
+              url: "https://floating-citadel-2192.herokuapp.com/trip",
+              //url: "http://localhost:3000/trip",
               data: JSON.stringify(formData),
               success: function(res){
                 if(typeof res === 'string'){
