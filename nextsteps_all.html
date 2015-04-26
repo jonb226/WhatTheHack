@@ -28,21 +28,43 @@
     <![endif]-->
       
       <style>
-      body {
-          padding-top: 50px;
-        }
+          body{
+              width:100%;
+              height:100%;
+              position: absolute;
+              top:0;
+              left:0;
+              background-image: url('empire.jpg');
+              background-position: 24% 0%;
+              overflow: hidden;
+          }
         .starter-template {
           padding: 40px 15px;
           text-align: center;
         }
         .top-choice {
           transition: all 4s ease-in-out;
-          transform: scale(3.0);
+          transform: scale(1.1);
+            font-weight:900;
+            margin-top:2em;
+            margin-bottom:2em;
         }   
+          
+        #fader{
+            position: absolute;
+            opacity: .7;
+            width:100%;
+            height:100%;
+            top: 0;
+            left:0;
+            background-color:white;
+            z-index:-1;
+        }
       </style>
   </head>
 
   <body>
+        <div id='fader'></div>
 
     <div class="container">
 
