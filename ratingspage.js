@@ -163,7 +163,7 @@ var getCityNames = function(cities) {
 	  	return Promise.all(_.map(cities, function(location, index) {
 	  		return new Promise(function(resolve, reject) {
 			    $.get("http://api.sandbox.amadeus.com/v1.2/location/" + location.name + "/?apikey=QW3ItzI2KsWJQ8YHg2ysbapNVMc2bteI", function(data) {
-			     	cities[index].name = data.city.name 
+			     	cities[index].name = (data.city)?data.city.name:data.airports[0].city_name;
 			     	resolve(cities[index]);
 			 	});
 	  		});
@@ -179,7 +179,7 @@ var getCities = function() {
     });
 
 	$.ajax({
-	  url: "https://floating-citadel-2192.herokuapp.com/trip/" + window.location.hash.substring(1).split("=")[1]
+	  url: "http://localhost:3000/trip/" + window.location.hash.substring(1).split("=")[1]
 	})
 	  .done(function( data ) {
 	  	 getCityNames(data.trip.locations).then(function(cities)  {
