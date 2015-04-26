@@ -21,6 +21,11 @@
 body {
   padding-bottom: 40px;
   color: #5a5a5a;
+  width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding:0;
+    margin:0;
 }
 
 
@@ -39,25 +44,39 @@ body {
 /* CUSTOMIZE THE CAROUSEL
 -------------------------------------------------- */
 
+.ticket-price{
+    font-weight:900;
+    font-size:1.2em;
+}
+            
 /* Carousel base class */
 .carousel {
-  margin-bottom: 40px;
+  margin-bottom: 10px;
+  height:60%;
 }
+            
+.carousel-inner{
+    height:100%;
+    width:100%;
+}
+            
 /* Since positioning the image, we need to help out the caption */
 .carousel-caption {
+  top:1rem;
   z-index: 1;
 }
 
 /* Declare heights because of positioning of img element */
 .carousel .item {
-  height: 600px;
+  height: 100%;
   background-color:#555;
 }
 .carousel img {
   position: absolute;
   top: 0;
   left: 0;
-  min-height: 600px;
+  /*min-height: 600px;*/
+  height:100%;
 }
 
 
@@ -117,7 +136,12 @@ body {
 
 
     .carousel-city-name {
-    font-size: 100px;
+        font-size: 4em;
+        margin-top:.1rem;
+        margin-bottom:auto;
+        text-align:center;
+        margin-right:auto;
+        margin-left:auto;
   }
 /* RESPONSIVE CSS
 -------------------------------------------------- */
@@ -142,7 +166,7 @@ body {
 
   /* Bump up size of carousel content */
   .carousel-caption p {
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
     font-size: 21px;
     line-height: 1.4;
   }
@@ -236,15 +260,15 @@ body {
 </div><!-- /.container -->
         
       <div class="pricing-text">
-        <h2>
+        <h3>
            This flight will cost you $<span class="ticket-price">  </span>.00
-        </h2>
+        </h3>
     </div>
 
     <div class="destination-number">
-        <h2>
+        <h3>
           Destination <span class="destination-name-current"> </span> of <span class="destination-name-total"></span>
-        </h2>
+        </h3>
     </div>
         <script async="" src="//www.google-analytics.com/analytics.js"></script><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
@@ -272,14 +296,15 @@ body {
         }
         .carousel-image
         {
-          width:100%;
+          height:100% !important;
+            max-width:auto;
         }
             .rating-circle
             {
                 display: inline-block;
                 border-radius: 50%;
-                width: 100px;
-                height: 100px;
+                width: 8rem;
+                height: 8rem;
                 background-color: #f0ad4e;
                 border: 3px solid rgb(90, 90, 90);
                 box-shadow: 8px 8px 4px #888888;
@@ -293,7 +318,8 @@ body {
                 color: rgb(90, 90, 90);
                 position: relative;
                 top:20px;
-                font-size: 40px;
+                font-size: 4rem;
+                line-height:.8em;
             }
             .ad {
               position: absolute;
@@ -353,6 +379,16 @@ body {
               margin-left: 10px;
               margin-top: 13px;
               text-align: center;
+            }
+            
+            .carousel-caption {
+                left: 0;
+                right: 0;
+                position: relative;
+            }
+            
+            .carousel-image{
+                min-width: 100%;
             }
         </style>
 
