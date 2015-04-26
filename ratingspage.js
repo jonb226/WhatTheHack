@@ -55,12 +55,20 @@ var loadNewCity = function(cityIndex) {
 	$(".carousel-image-3").attr("src", cities[cityIndex].imageUrl3);
 	$(".carousel-city-name").text(cities[cityIndex].name);
 	$(".destination-name-current").text(cityIndex + 1);
+	$(".ticket-price").text(cities[cityIndex].cost);
 
 	var rating1 = $(".rating-1");
 	var rating2 = $(".rating-2");
 	var rating3 = $(".rating-3");
 	var rating4 = $(".rating-4");
 	var rating5 = $(".rating-5");
+
+	$(".rating-1").off();
+	$(".rating-2").off();
+	$(".rating-3").off();
+	$(".rating-4").off();
+	$(".rating-5").off();
+
 	rating1.click(function() {
 		$.ajax({
 	  		url: "https://floating-citadel-2192.herokuapp.com/rating",
@@ -73,8 +81,10 @@ var loadNewCity = function(cityIndex) {
 	  		type: "POST",
 	  		contentType: "application/json"
 		});
-		if(cityIndex < cities.length) {
+		if(cityIndex < cities.length -1) {
 			loadNewCity(cityIndex + 1);
+		} else {
+			 window.location = '/nextsteps_all.html#id=' + tripID;
 		}
 	});
 	rating2.click(function() {
@@ -89,8 +99,10 @@ var loadNewCity = function(cityIndex) {
 	  		type: "POST",
 	  		contentType: "application/json"
 		});
-		if(cityIndex < cities.length) {
+		if(cityIndex < cities.length -1) {
 			loadNewCity(cityIndex + 1);
+		} else {
+			 window.location = '/nextsteps_all.html#id=' + tripID;
 		}
 	});
 	rating3.click(function() {
@@ -105,8 +117,10 @@ var loadNewCity = function(cityIndex) {
 	  		type: "POST",
 	  		contentType: "application/json"
 		});
-		if(cityIndex < cities.length) {
+		if(cityIndex < cities.length -1) {
 			loadNewCity(cityIndex + 1);
+		} else {
+			 window.location = '/nextsteps_all.html#id=' + tripID;
 		}
 	});
 	rating4.click(function() {
@@ -121,8 +135,10 @@ var loadNewCity = function(cityIndex) {
 	  		type: "POST",
 	  		contentType: "application/json"
 		});
-		if(cityIndex < cities.length) {
+		if(cityIndex < cities.length -1) {
 			loadNewCity(cityIndex + 1);
+		} else {
+			 window.location = '/nextsteps_all.html#id=' + tripID;
 		}
 	});
 	rating5.click(function() {
@@ -137,8 +153,10 @@ var loadNewCity = function(cityIndex) {
 	  		type: "POST",
 	  		contentType: "application/json"
 		});
-		if(cityIndex < cities.length) {
+		if(cityIndex < cities.length -1) {
 			loadNewCity(cityIndex + 1);
+		} else {
+			 window.location = '/nextsteps_all.html#id=' + tripID;
 		}
 	});
 }
@@ -163,7 +181,9 @@ var getCityNames = function(cities) {
 	  	return Promise.all(_.map(cities, function(location, index) {
 	  		return new Promise(function(resolve, reject) {
 			    $.get("http://api.sandbox.amadeus.com/v1.2/location/" + location.name + "/?apikey=QW3ItzI2KsWJQ8YHg2ysbapNVMc2bteI", function(data) {
-			     	cities[index].name = (data.city)?data.city.name:data.airports[0].city_name;
+			     	if(data.city) {
+			     		cities[index].name = data.city.name 
+			     	}
 			     	resolve(cities[index]);
 			 	});
 	  		});
@@ -194,6 +214,8 @@ var start = function() {
 	$(".destination-name-total").text(cities.length);
 	loadNewCity(0);
 }
+
+var tripID = window.location.hash.substring(1).split("=")[1];
 
 var citiesPromise = getCities();
 var cities;
