@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <title>Starter Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!--<script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      
+      <style>
+      body {
+          padding: 1em;
+          
+        }
+        .starter-template {
+          padding: 40px 15px;
+          text-align: center;
+        }
+
+      
+      </style>
+  </head>
+    <body>
+    <form action='http://localhost:3000/trip' method='post' class="form-horizontal" id='myform'>
+    <div class="form-group">
+        <label for="inputEmail" class="control-label col-xs-2">Departure airport</label>
+        <div class="col-xs-10">
+            <input type="text" class="form-control" id="airport" placeholder="Airport" name='departure_airport'>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $('#airport').on('input',function(e){
+                $.get('http://api.sandbox.amadeus.com/v1.2/airports/autocomplete?apikey=nuf8VYYauMbHS7aDd4HOYP6WEo0uzfwE&term=' + this.value, function(data){
+                    data = data.map(function(e){
+                        return e.label;
+                    });
+                    $("#airport").typeahead({ source:data });
+                },'json');
+            });
+        });
+        
+    </script>
+    <div class="form-group">
+        <label for="inputPassword" class="control-label col-xs-2">Max price</label>
+        <div class="col-xs-10">
+            <input type="text" class="form-control" id="maxPrice" placeholder="Max Price" name='max_cost'>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for='departureDate' class="control-label col-xs-2">Departure Date</label>
+        <div class="col-xs-10">
+            <input type="date" class='form-control' id='departureDate' placeholder='Dates' name='start_date'>
+        </div>
+    </div>
+        
+    <div class="form-group">
+        <label for='returnDate' class="control-label col-xs-2">Return Date</label>
+        <div class="col-xs-10">
+            <input type="date" class='form-control' id='returnDate' placeholder='Dates' name='end_date'>
+        </div>
+    </div>
+        
+    <div class="form-group emailGroup">
+        <label for='email1' class="control-label col-xs-2">Emails</label>
+        <div class="col-xs-10">
+            <input type="text" class='form-control' id='email1' placeholder='email' name='email1'>
+        </div>
+    </div>
+        
+    <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+            <button type='button' class="btn btn-secondary" id='addEmail'>Add email</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('addEmail').addEventListener('click', function(e){
+            var lastEmailGroup = document.getElementsByClassName('emailGroup');
+            lastEmailGroup = 
+                lastEmailGroup[lastEmailGroup.length - 1];
+            var newEmailGroup = lastEmailGroup.cloneNode(true);
+            var emailRegex = /email([0-9])/g;
+            var num = parseInt(emailRegex.exec(newEmailGroup.innerHTML)[1]);
+            newEmailGroup.innerHTML = newEmailGroup.innerHTML.
+                replace(/email[0-9]/g, 'email' + (num+1)).
+                replace(/Emails/,'');
+            lastEmailGroup.parentNode.insertBefore(newEmailGroup, lastEmailGroup.nextSibling);
+        });
+        
+    </script>
+        
+    <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+            <button type="button" class="btn btn-primary" id='submit'>Done</button>
+        </div>
+    </div>
+    <script>
+    
+        $('#submit').on('click', function(){
+            var formData = $("#myform").serializeArray();
+            delete formData.email1;
+            formData = formData.reduce(function(p,c){
+                p[c.name] = c.value;
+                return p;
+            },{});
+            formData.departure_airport = 
+                /\[(.*?)\]/.exec(formData.departure_airport)[1];
+            formData = {trip: formData};
+            console.log(JSON.stringify(formData));
+            $.ajax({
+              type: "POST",
+              url: "https://floating-citadel-2192.herokuapp.com/trip",
+              //url: "http://localhost:3000/trip",
+              data: JSON.stringify(formData),
+              success: function(res){
+                window.location = '/ratingspage.html#id=' + res.trip.id;
+              },
+              //dataType: "json",
+              contentType : "application/json"
+            });
+        });
+    </script>
+</form>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src='bootstrap3-typeahead.min.js'></script>
+  <script src="http://localhost:8080/webpack-dev-server.js"></script>
+    </body>
+</html>
