@@ -199,7 +199,7 @@ var getCities = function() {
     });
 
 	$.ajax({
-	  url: "http://localhost:3000/trip/" + window.location.hash.substring(1).split("=")[1]
+	  url: "https://floating-citadel-2192.herokuapp.com/trip/" + window.location.hash.substring(1).split("=")[1]
 	})
 	  .done(function( data ) {
 	  	 getCityNames(data.trip.locations).then(function(cities)  {
